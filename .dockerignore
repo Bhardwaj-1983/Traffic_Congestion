@@ -1,0 +1,43 @@
+# Version control
+.git/
+.gitignore
+.gitattributes
+
+# Python cache
+__pycache__/
+*.py[cod]
+*.egg-info/
+*.egg
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Large raw data — let the user mount them at runtime
+data/raw/*.parquet
+data/processed/*.parquet
+models/*.pkl
+
+# IDE / editor
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db
+
+# Docs / extras that aren't needed in the image
+Product Requirements Document_*.md
+notebooks/
+tests/

@@ -1,0 +1,26 @@
+# Lightweight compose file that volume-mounts data/ and models/ so the
+# Streamlit app in the container can read pipeline artefacts generated
+# on the host.
+#
+#   docker compose up --build
+#
+# To run a one-shot pipeline inside the image:
+#   docker compose run --rm app python main.py
+
+version: "3.9"
+
+services:
+  app:
+    build: .
+    image: traffic-congestion:latest
+    container_name: traffic-congestion
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./data:/app/data
+      - ./models:/app/models
+      - ./outputs:/app/outputs
+    environment:
+      - STREAMLIT_SERVER_HEADLESS=true
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped

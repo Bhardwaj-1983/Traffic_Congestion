@@ -1,0 +1,139 @@
+================================================================================
+TRAFFIC CONGESTION PATTERN DISCOVERY AND VISUALIZATION
+All Commands to Run This Project
+================================================================================
+
+REQUIREMENTS: Python 3.9+
+
+
+--------------------------------------------------------------------------------
+1. SETUP AND INSTALLATION
+--------------------------------------------------------------------------------
+
+# Install dependencies via pip
+pip install -r requirements.txt
+
+# OR install via Makefile
+make install
+
+# (Optional) Create and activate a virtual environment first
+python -m venv .venv
+source .venv/bin/activate          # macOS / Linux
+.venv\Scripts\activate             # Windows
+
+
+--------------------------------------------------------------------------------
+2. DATA ACQUISITION
+--------------------------------------------------------------------------------
+
+# Download six months of NYC Yellow Taxi trip records (default: Jan-Jun 2023)
+python scripts/download_data.py
+# OR
+make download
+
+# Download with custom range
+python scripts/download_data.py --year 2023 --start 1 --end 6 --cab yellow
+
+# Build taxi zone centroids file (needed for the map view)
+python scripts/make_centroids.py
+# OR
+make centroids
+
+
+--------------------------------------------------------------------------------
+3. RUN THE FULL PIPELINE
+--------------------------------------------------------------------------------
+
+# Recommended: run end-to-end
+python main.py
+# OR
+make pipeline
+
+# Useful flags
+python main.py --k 4                  # force k=4, skip elbow
+python main.py --dbscan               # also run DBSCAN for hotspots
+python main.py --only-viz             # regenerate viz data only
+python main.py --skip-load --skip-preprocess
+
+
+--------------------------------------------------------------------------------
+4. RUN PIPELINE STAGE-BY-STAGE
+--------------------------------------------------------------------------------
+
+python -m src.data_loader             # Stage 1 - data loading
+python -m src.preprocessing           # Stage 2 - preprocessing
+python -m src.feature_engineering     # Stage 3 - feature engineering
+python -m src.clustering              # Stage 4 - clustering
+python -m src.visualization           # Stage 5 - visualization
+
+# Stage-specific upgrades / options
+python -m src.preprocessing --iqr             # enable per-zone IQR-fence speed filter
+python -m src.preprocessing --no-quality      # skip fare/passenger quality-signal gate
+python -m src.clustering --scaler robust      # use RobustScaler instead of StandardScaler
+python -m src.clustering --k 4                # skip elbow, force k=4
+
+
+--------------------------------------------------------------------------------
+5. RUN THE STREAMLIT WEB APP
+--------------------------------------------------------------------------------
+
+streamlit run app/app.py
+# OR
+make app
+
+# Then open in your browser:
+# http://localhost:8501
+
+
+--------------------------------------------------------------------------------
+6. TESTING
+--------------------------------------------------------------------------------
+
+# Run the full pytest suite
+python -m pytest tests/ -v
+# OR
+make test
+
+
+--------------------------------------------------------------------------------
+7. DOCKER
+--------------------------------------------------------------------------------
+
+# Build the Docker image
+docker build -t traffic-congestion .
+
+# Run the container (Streamlit on port 8501)
+docker run --rm -p 8501:8501 \
+    -v $(pwd)/data:/app/data \
+    -v $(pwd)/models:/app/models \
+    -v $(pwd)/outputs:/app/outputs \
+    traffic-congestion
+
+# Use Docker Compose
+docker compose up --build
+
+# Run the pipeline inside the container
+docker compose run --rm app python main.py
+
+
+--------------------------------------------------------------------------------
+8. NOTEBOOKS (EDA)
+--------------------------------------------------------------------------------
+
+# Open the Jupytext-paired EDA notebook
+jupyter notebook notebooks/01_eda.py
+
+
+--------------------------------------------------------------------------------
+9. TYPICAL FIRST-TIME RUN (END-TO-END)
+--------------------------------------------------------------------------------
+
+pip install -r requirements.txt
+python scripts/download_data.py
+python scripts/make_centroids.py
+python main.py
+streamlit run app/app.py
+
+================================================================================
+END OF COMMANDS
+================================================================================

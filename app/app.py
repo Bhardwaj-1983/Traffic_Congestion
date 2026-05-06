@@ -324,7 +324,8 @@ def build_palette(levels: list[int]) -> tuple[dict[int, str], dict[int, list[int
     """
     Generate label, hex-color, and RGBA-color dicts for an arbitrary set of
     congestion levels. Uses the canonical 3-level palette when k=3, a 4-stop
-    ramp when k=4, and a hand-curated high-contrast palette for k≥5 so
+    ramp when k=4, a 6-stop ramp when k=6 (the current default chosen by the
+    kneedle elbow), and a hand-curated high-contrast palette for k≥5 so
     adjacent clusters remain visually distinct.
 
     Returns (label_map, rgba_map, hex_map).
@@ -342,6 +343,9 @@ def build_palette(levels: list[int]) -> tuple[dict[int, str], dict[int, list[int
     # k=4: clean four-stop green→red ramp
     if n == 4:
         cols = ["#2ecc71", "#f1c40f", "#e67e22", "#c0392b"]
+    # k=6: six-stop green→red ramp (current pipeline default)
+    elif n == 6:
+        cols = ["#2ecc71", "#7ed957", "#f1c40f", "#f39c12", "#e67e22", "#c0392b"]
     elif n <= len(DISTINCT_SEVERITY_PALETTE):
         # Take the first n colours from the curated palette in severity order
         cols = DISTINCT_SEVERITY_PALETTE[:n]

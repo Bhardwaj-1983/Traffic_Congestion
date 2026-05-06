@@ -99,7 +99,7 @@ pipeline:
 
 .PHONY: app
 app:
-	$(STREAMLIT) run app/app.py
+	$(STREAMLIT) run app/app.py --server.port 8502
 
 # ── Quality gates ───────────────────────────────────────────────────────────
 
@@ -126,7 +126,7 @@ docker-build:
 
 .PHONY: docker-run
 docker-run:
-	$(DOCKER) run --rm -p 8501:8501 \
+	$(DOCKER) run --rm -p 8502:8502 \
 		-v $(CURDIR)/data:/app/data \
 		-v $(CURDIR)/models:/app/models \
 		-v $(CURDIR)/outputs:/app/outputs \

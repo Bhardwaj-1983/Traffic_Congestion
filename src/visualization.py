@@ -630,7 +630,7 @@ def plot_feature_distributions(
         for level in sorted(cluster_labels_df["congestion_level"].unique()):
             sub = cluster_labels_df[cluster_labels_df["congestion_level"] == level]
             color = CONGESTION_HEX_COLORS.get(int(level), _DEFAULT_HEX)
-            vals = sub[feat].dropna()
+            vals = sub[feat].dropna().astype(float)
             if vals.empty:
                 continue
             ax.hist(vals, bins=40, alpha=0.55,

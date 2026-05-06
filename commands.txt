@@ -26,11 +26,6 @@ source .venv/bin/activate          # macOS / Linux
 2. DATA ACQUISITION
 --------------------------------------------------------------------------------
 
-# Download six months of NYC Yellow Taxi trip records (default: Jan-Jun 2023)
-python scripts/download_data.py
-# OR
-make download
-
 # Download with custom range
 python scripts/download_data.py --year 2023 --start 1 --end 6 --cab yellow
 

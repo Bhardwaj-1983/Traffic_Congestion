@@ -158,7 +158,7 @@ TARGET_LATENCY_MS: Final[int] = 500         # p95
 # ── K-Means hyper-parameters ──────────────────────────────────────────────────
 
 K_RANGE: Final[tuple[int, int]] = (2, 11)   # inclusive-exclusive upper bound
-DEFAULT_K: Final[int] = 3                   # fallback if elbow inconclusive
+DEFAULT_K: Final[int] = 6                   # fallback if elbow inconclusive
 KMEANS_RANDOM_STATE: Final[int] = 42
 KMEANS_N_INIT: Final[int] = 10
 KMEANS_MAX_ITER: Final[int] = 300

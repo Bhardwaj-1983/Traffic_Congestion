@@ -185,10 +185,11 @@ def choose_k(
     Sweep k across ``k_range``, recording inertia and silhouette for each.
     Save the joint model-selection curve and pick k by this rule:
 
-        · Compute the 2nd-derivative elbow on the inertia curve.
+        · Compute the elbow on the inertia curve (kneedle preferred).
         · Find the k that maximises silhouette.
-        · If the two agree within 1 → use the elbow.
-        · Otherwise → prefer the silhouette winner (better-cohering clusters).
+        · Prefer the elbow when one is found — it is the more interpretable
+          choice on flat silhouette curves. The silhouette winner is used
+          only as a fallback when no elbow can be detected.
     """
     ks = list(k_range)
     inertias: list[float] = []
@@ -222,13 +223,19 @@ def choose_k(
     else:
         sil_k = ks[int(np.nanargmax(sil_arr))]
 
-    # Combined rule
-    if abs(sil_k - elbow_k) <= 1:
+    # Combined rule — prefer the elbow when found; silhouette is fallback only.
+    if elbow_k is not None:
         chosen = elbow_k
-        rule = f"elbow via {elbow_source} (silhouette agrees within 1)"
+        if abs(sil_k - elbow_k) <= 1:
+            rule = f"elbow via {elbow_source} (silhouette agrees within 1)"
+        else:
+            rule = (
+                f"elbow via {elbow_source} "
+                f"(silhouette-argmax={sil_k} overruled — flat silhouette curve)"
+            )
     else:
         chosen = sil_k
-        rule = f"silhouette-argmax (elbow via {elbow_source} disagreed)"
+        rule = "silhouette-argmax (no elbow detected)"
 
     logger.info(
         f"k selection: elbow={elbow_k} ({elbow_source}), "
